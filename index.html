@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblioteca de Clases · Ing. Javier Romero Castro · TecNM</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rojo: #C8102E;
+    --rojo-oscuro: #8B0A1E;
+    --oro: #F5A800;
+    --fondo: #0D0D0D;
+    --fondo2: #141414;
+    --fondo3: #1C1C1C;
+    --texto: #F0EDE8;
+    --texto-dim: #888;
+    --borde: #2A2A2A;
+    --card1: #1A0A0D;
+    --card2: #0A0F1A;
+    --card3: #0A1A0F;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--fondo);
+    color: var(--texto);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  /* Header */
+  header {
+    border-bottom: 1px solid var(--borde);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    background: rgba(13,13,13,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .logo-badge {
+    width: 36px;
+    height: 36px;
+    background: var(--rojo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 75% 100%, 0 100%);
+  }
+
+  .logo-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--texto-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+  .logo-text strong {
+    display: block;
+    color: var(--texto);
+    font-size: 0.78rem;
+  }
+
+  .semestre-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--oro);
+    border: 1px solid var(--oro);
+    padding: 0.25rem 0.6rem;
+    opacity: 0.8;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 5rem 2rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rojo);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .hero-label::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--rojo);
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.2rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--oro);
+  }
+
+  .hero-sub {
+    font-size: 0.95rem;
+    color: var(--texto-dim);
+    max-width: 540px;
+    line-height: 1.7;
+  }
+
+  /* Stats bar */
+  .stats {
+    max-width: 1100px;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+    display: flex;
+    gap: 2rem;
+    border-top: 1px solid var(--borde);
+    padding-top: 1.5rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--texto);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--texto-dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .stat-div {
+    width: 1px;
+    background: var(--borde);
+    align-self: stretch;
+  }
+
+  /* Grid de materias */
+  .grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5px;
+    background: var(--borde);
+    border: 1px solid var(--borde);
+  }
+
+  .card {
+    background: var(--fondo2);
+    padding: 2rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    cursor: default;
+  }
+
+  .card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent, var(--rojo));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+
+  .card:hover::after { transform: scaleX(1); }
+  .card:hover { background: var(--card-bg, #1a1010); }
+
+  .card-clave {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    color: var(--accent, var(--rojo));
+    text-transform: uppercase;
+  }
+
+  .card-titulo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.45rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    color: var(--texto-dim);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  /* Lista de temas */
+  .temas {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--borde);
+    padding-top: 1rem;
+  }
+
+  .tema-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.8rem;
+    color: var(--texto-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .tema-item:hover { color: var(--texto); }
+
+  .tema-item span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent, var(--rojo));
+    opacity: 0.6;
+  }
+
+  .tema-item .arrow {
+    opacity: 0;
+    font-size: 0.7rem;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .tema-item:hover .arrow { opacity: 1; transform: translateX(3px); }
+
+  /* Card colors */
+  .card-bd {
+    --accent: #C8102E;
+    --card-bg: #1a0a0d;
+  }
+  .card-fbd {
+    --accent: #F5A800;
+    --card-bg: #1a120a;
+  }
+  .card-pw {
+    --accent: #2979FF;
+    --card-bg: #0a0f1a;
+  }
+
+  /* Decorative number */
+  .card-num {
+    position: absolute;
+    top: -0.5rem;
+    right: 1.2rem;
+    font-family: 'DM Serif Display', serif;
+    font-size: 5rem;
+    color: rgba(255,255,255,0.025);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--borde);
+    padding: 1.5rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--texto-dim);
+    letter-spacing: 0.08em;
+    line-height: 1.8;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--rojo);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero { animation: fadeUp 0.6s ease both; }
+  .stats { animation: fadeUp 0.6s 0.1s ease both; }
+  .card:nth-child(1) { animation: fadeUp 0.5s 0.15s ease both; }
+  .card:nth-child(2) { animation: fadeUp 0.5s 0.25s ease both; }
+  .card:nth-child(3) { animation: fadeUp 0.5s 0.35s ease both; }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 2rem; }
+    .stats { gap: 1rem; }
+    .stat-num { font-size: 1.4rem; }
+    header { padding: 0 1rem; }
+    .hero, .stats, .grid, footer { padding-left: 1rem; padding-right: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <div class="logo-badge">TEC<br>NM</div>
+    <div class="logo-text">
+      <strong>Ing. Javier Romero Castro</strong>
+      Instituto Tecnológico de Villahermosa
+    </div>
+  </div>
+  <div class="semestre-badge">ENE–JUN 2025</div>
+</header>
+
+<section class="hero">
+  <div class="hero-label">Recursos académicos</div>
+  <h1>Biblioteca<br>de <em>Clases</em></h1>
+  <p class="hero-sub">Material didáctico, ejercicios y referencias para los cursos de Ingeniería. Selecciona una materia para acceder a sus recursos.</p>
+</section>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">3</div>
+    <div class="stat-label">Materias</div>
+  </div>
+  <div class="stat-div"></div>
+  <div class="stat">
+    <div class="stat-num" id="total-temas">0</div>
+    <div class="stat-label">Recursos</div>
+  </div>
+  <div class="stat-div"></div>
+  <div class="stat">
+    <div class="stat-num">ITVh</div>
+    <div class="stat-label">Campus</div>
+  </div>
+</div>
+
+<main class="grid">
+
+  <!-- Materia 1 -->
+  <div class="card card-bd">
+    <div class="card-num">01</div>
+    <div class="card-clave">AEA-1063</div>
+    <div class="card-titulo">Taller de Bases de Datos</div>
+    <div class="card-desc">Diseño, implementación y administración de bases de datos relacionales. SQL, modelado E-R, normalización y consultas avanzadas con MariaDB.</div>
+    <ul class="temas" id="temas-bd">
+      <a class="tema-item" href="taller-bd/modelado-er.html">
+        Modelado E-R <span>01</span><span class="arrow">→</span>
+      </a>
+      <a class="tema-item" href="taller-bd/normalizacion.html">
+        Normalización 1NF–3NF <span>02</span><span class="arrow">→</span>
+      </a>
+      <a class="tema-item" href="taller-bd/sql-consultas.html">
+        Consultas SQL avanzadas <span>03</span><span class="arrow">→</span>
+      </a>
+      <a class="tema-item" href="taller-bd/vistas-procedimientos.html">
+        Vistas y Procedimientos <span>04</span><span class="arrow">→</span>
+      </a>
+    </ul>
+  </div>
+
+  <!-- Materia 2 -->
+  <div class="card card-fbd">
+    <div class="card-num">02</div>
+    <div class="card-clave">AEF-24124</div>
+    <div class="card-titulo">Fundamentos de Bases de Datos</div>
+    <div class="card-desc">Conceptos básicos de sistemas de información, modelos de datos, álgebra relacional y fundamentos del lenguaje SQL para ingeniería.</div>
+    <ul class="temas" id="temas-fbd">
+      <a class="tema-item" href="fund-bd/conceptos-sgbd.html">
+        Conceptos de SGBD <span>01</span><span class="arrow">→</span>
+      </a>
+      <a class="tema-item" href="fund-bd/modelo-relacional.html">
+        Modelo Relacional <span>02</span><span class="arrow">→</span>
+      </a>
+      <a class="tema-item" href="fund-bd/algebra-relacional.html">
+        Álgebra Relacional <span>03</span><span class="arrow">→</span>
+      </a>
+      <a class="tema-item" href="fund-bd/intro-sql.html">
+        Introducción a SQL <span>04</span><span class="arrow">→</span>
+      </a>
+    </ul>
+  </div>
+
+  <!-- Materia 3 -->
+  <div class="card card-pw">
+    <div class="card-num">03</div>
+    <div class="card-clave">AEB-1055</div>
+    <div class="card-titulo">Programación Web</div>
+    <div class="card-desc">Desarrollo de aplicaciones web con HTML5, CSS3, JavaScript, PHP y Bootstrap 5. Arquitectura cliente-servidor y despliegue en producción.</div>
+    <ul class="temas" id="temas-pw">
+      <a class="tema-item" href="prog-web/html5-semantico.html">
+        HTML5 Semántico <span>01</span><span class="arrow">→</span>
+      </a>
+      <a class="tema-item" href="prog-web/css3-bootstrap.html">
+        CSS3 y Bootstrap 5 <span>02</span><span class="arrow">→</span>
+      </a>
+      <a class="tema-item" href="prog-web/javascript-dom.html">
+        JavaScript y DOM <span>03</span><span class="arrow">→</span>
+      </a>
+      <a class="tema-item" href="prog-web/php-mariadb.html">
+        PHP + MariaDB <span>04</span><span class="arrow">→</span>
+      </a>
+    </ul>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-left">
+    Ing. Javier Romero Castro · Profesor de Tiempo Completo<br>
+    Instituto Tecnológico de Villahermosa · TecNM · Tabasco, México
+  </div>
+  <div class="footer-right">Semestre Ene–Jun 2025</div>
+</footer>
+
+<script>
+  // Contar recursos totales
+  const temas = document.querySelectorAll('.tema-item');
+  document.getElementById('total-temas').textContent = temas.length;
+</script>
+
+</body>
+</html>
